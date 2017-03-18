@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/Imagenes">
+        <file>Folders-PNG-File.png</file>
+        <file>Docs-icon-iloveimg-resized.png</file>
+        <file>901 (1) - copia.png</file>
+        <file>901 (1).png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>jixzMaA5T.png</file>
+    </qresource>
+</RCC>

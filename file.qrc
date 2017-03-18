@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/File">
+        <file>Docs-icon-iloveimg-resized.png</file>
+    </qresource>
+</RCC>
