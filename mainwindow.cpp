@@ -3,8 +3,6 @@
 
 #include <QInputDialog>
 
-
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -17,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->btnAtras->setStyleSheet("border-image: url(:/Imagenes/901 (1) - copia.png);");
     ui->btnAdelante->setStyleSheet("border-image: url(:/Imagenes/901 (1).png);");
     ui->btnPegar->hide();
+    arbol = ui->treeView;
     refrescar();
 }
 
@@ -39,6 +38,9 @@ void MainWindow::insertarCarpeta(string texto)
     listaBotones.at(cantBotones)->setStyleSheet("border-image: url(:/Imagenes/Folders-PNG-File.png);");
     listaBotones.at(cantBotones)->show();
     connect(listaBotones.at(cantBotones), SIGNAL (released()),this, SLOT (eventoCarpetas()));
+    TreeModel * a = new TreeModel(QString::fromStdString(texto));
+    arbol->setModel(a);
+    arbol->show();
     cantBotones++;
     posX = posX + 80;
     if(posX >=600)
@@ -57,6 +59,9 @@ void MainWindow::insertarArchivo(string texto)
     listaBotones.at(cantBotones)->setStyleSheet("border-image: url(:/Imagenes/Docs-icon-iloveimg-resized.png);");
     listaBotones.at(cantBotones)->show();
     connect(listaBotones.at(cantBotones), SIGNAL (released()),this, SLOT (eventoArchivos()));
+    TreeModel * a = new TreeModel(QString::fromStdString(texto));
+    arbol->setModel(a);
+    arbol->show();
     cantBotones++;
     posX = posX + 80;
     if(posX >=600)
@@ -102,8 +107,8 @@ void MainWindow::leer_archivo()
 void MainWindow::on_btnPegar_clicked()
 {
     File *temp = fileCopiar;
-    temp->setDireccion(folderActual->getDireccion()+temp->getNombre()+"/");
     temp->setNombre(fs->fsDuplicados(temp->getNombre(),folderActual));
+    temp->setDireccion(folderActual->getDireccion()+temp->getNombre()+"/");
     fs->fsPegar(temp,folderActual);
     fileCopiar = NULL;
     ui->btnPegar->hide();
@@ -141,21 +146,24 @@ void MainWindow::on_btnNuevo_clicked()
     msgBoxNuevo.exec();
     if(msgBoxNuevo.clickedButton()==pButtonCarpeta) {
         QString x = QInputDialog::getText(this,"Nueva Carpeta","Ingrese el Nombre de la Carpeta:");
+        string nombre = x.toStdString();
+        nombre = fs->fsDuplicados(nombre,folderActual);
         if(x != ""){
-            fs->fsCrearArchivo(folderActual,fs->fsDuplicados(x.toStdString(),folderActual),"Carpeta");
-            insertarCarpeta(x.toStdString());
+            fs->fsCrearArchivo(folderActual,nombre,"Carpeta");
+            insertarCarpeta(nombre);
         }
     }
     else if(msgBoxNuevo.clickedButton()==pButtonArchivo)
     {
         QString x = QInputDialog::getText(this,"Nuevo Archivo","Ingrese el Nombre del Archivo:");
+        string nombre = x.toStdString();
+        nombre = fs->fsDuplicados(nombre,folderActual);
         if(x != ""){
-            fs->fsCrearArchivo(folderActual,fs->fsDuplicados(x.toStdString(),folderActual),"Archivo");
-            insertarArchivo(x.toStdString());
+            fs->fsCrearArchivo(folderActual,nombre,"Archivo");
+            insertarArchivo(nombre);
         }
     }
 }
-
 
 void MainWindow::eventoArchivos()
 {

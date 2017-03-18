@@ -5,8 +5,10 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QTreeView>
 #include <qlabel.h>
 #include <qpushbutton.h>
+#include "treemodel.h"
 
 using namespace std;
 
@@ -44,6 +46,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QTreeView * arbol;
     int cantBotones,cantLabel,posY, posX;
     string ruta;
     File * fileCopiar;

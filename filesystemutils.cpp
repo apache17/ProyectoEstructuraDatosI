@@ -12,6 +12,7 @@ File * FileSystemUtils::fsCrearArchivo(Folder * donde, string nombre,string tipo
     File *nuevo;
     string direccion;
 
+
     if(tipo == "Archivo"){
         direccion = donde->getDireccion() + nombre + ".txt"+"/";
         nuevo = new TextFile(nombre,direccion,"");
@@ -105,6 +106,7 @@ File * FileSystemUtils::buscar(int pos, Folder *donde)
     }
     return temp;
 }
+
 
 string FileSystemUtils::duplicadosAux(string nombre, Folder * donde, int cant,int tamanoPalabra)
 {

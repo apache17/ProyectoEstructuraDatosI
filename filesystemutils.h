@@ -17,12 +17,13 @@ public:
         File * fsCrearArchivo(Folder * donde,string nombre,string tipo);
         QList<File*> fsListarArchivos(Folder *donde);
         File * fsCargarArchivo(string nombre,Folder *donde);
-        void fsPegar(File * nuevo, Folder *donde);
         int fsEliminarArchivo(string nombre,Folder *donde);
-        File * fsCopiar(string nombre,Folder *donde);
-        string fsDuplicados(string nombre, Folder * donde);
-        File * copiarCarpeta(Folder *carpeta, Folder *copiar);
 
+        File * fsCopiar(string nombre,Folder *donde);
+        File * copiarCarpeta(Folder *carpeta, Folder *copiar);
+        void fsPegar(File * nuevo, Folder *donde);
+
+        string fsDuplicados(string nombre, Folder * donde);
 
     protected:
 
