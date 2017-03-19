@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     fs = new FileSystemUtils();
     raiz = new Folder("Raiz","Raiz/");
+    raiz->item = NULL;
     folderActual = raiz;
     fileCopiar = NULL;
     ui->btnAtras->setStyleSheet("border-image: url(:/Imagenes/901 (1) - copia.png);");
@@ -24,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 QTreeWidgetItem * MainWindow::AddRoot(QTreeWidgetItem * parent,QString nombre)
 {
-    if(parent == NULL  || folderActual == raiz){
+    if(parent == NULL){
         QTreeWidgetItem * itm = new QTreeWidgetItem((ui->treeWidget));
         itm->setText(0,nombre);
         return itm;
@@ -49,12 +50,18 @@ void MainWindow::agregarLabel(string nombre)
 
 void MainWindow::insertarCarpeta(string texto)
 {
+    QMenu *menuMode = new QMenu(this);
+    menuMode->addAction("Abrir",this, SLOT(abrir_archivo()));
+    menuMode->addAction("Eliminar",this, SLOT(eliminar_archivo()));
+    menuMode->addAction("Copiar",this, SLOT(copiar()));
+
     agregarLabel(texto);
     listaBotones.append(new QPushButton(this));
     listaBotones.at(cantBotones)->setObjectName(QString::fromStdString(texto));
     listaBotones.at(cantBotones)->setGeometry(QRect(QPoint(posX, posY),QSize(50, 50)));
     listaBotones.at(cantBotones)->setStyleSheet("border-image: url(:/Imagenes/Folders-PNG-File.png);");
     listaBotones.at(cantBotones)->show();
+   //listaBotones.at(cantBotones)->setMenu(menuMode);
     connect(listaBotones.at(cantBotones), SIGNAL (released()),this, SLOT (eventoCarpetas()));
     cantBotones++;
 
