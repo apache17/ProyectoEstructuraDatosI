@@ -2,6 +2,8 @@
 #define TEXTFILE_H
 #include "File.h"
 
+#include <QTreeWidget>
+
 class TextFile : public File
 {
     public:
@@ -11,6 +13,7 @@ class TextFile : public File
         string getTexto();
         void setNombre(string nombre);
         void setTexto(string valor);
+        QTreeWidgetItem * item;
         void setDireccion(string d);
         int getTipo();
         virtual ~TextFile();

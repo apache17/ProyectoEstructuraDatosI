@@ -37,8 +37,6 @@ QTreeWidgetItem * MainWindow::AddRoot(QTreeWidgetItem * parent,QString nombre)
     }
 }
 
-
-
 void MainWindow::agregarLabel(string nombre)
 {
     listaEtiquetas.append(new QLabel(this));
@@ -77,7 +75,6 @@ void MainWindow::insertarArchivo(string texto)
     listaBotones.at(cantBotones)->setStyleSheet("border-image: url(:/Imagenes/Docs-icon-iloveimg-resized.png);");
     listaBotones.at(cantBotones)->show();
     connect(listaBotones.at(cantBotones), SIGNAL (released()),this, SLOT (eventoArchivos()));
-    AddRoot(actual,QString::fromStdString(texto+".txt"));
     cantBotones++;
     posX = posX + 80;
     if(posX >=600)
@@ -127,6 +124,7 @@ void MainWindow::on_btnPegar_clicked()
     temp->setNombre(fs->fsDuplicados(temp->getNombre(),folderActual));
     temp->setDireccion(folderActual->getDireccion()+temp->getNombre()+"/");
     fs->fsPegar(temp,folderActual);
+    AddRoot(actual,QString::fromStdString(temp->getNombre()));
     fileCopiar = NULL;
     ui->btnPegar->hide();
     refrescar();
@@ -178,7 +176,9 @@ void MainWindow::on_btnNuevo_clicked()
         string nombre = x.toStdString();
         nombre = fs->fsDuplicados(nombre,folderActual);
         if(x != ""){
-            fs->fsCrearArchivo(folderActual,nombre,"Archivo");
+            File * x = fs->fsCrearArchivo(folderActual,nombre,"Archivo");
+            TextFile * file = dynamic_cast<TextFile*>(x);
+            file->item = AddRoot(actual,QString::fromStdString(nombre+".txt"));
             insertarArchivo(nombre);
         }
     }

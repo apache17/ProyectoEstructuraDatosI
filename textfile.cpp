@@ -4,6 +4,7 @@
 TextFile::TextFile(string nombre, string direccion,string texto) : File(nombre,direccion,0)
 {
     this->texto = texto;
+    this->item = item;
 }
 
 TextFile::~TextFile()

@@ -18,18 +18,14 @@ SOURCES += main.cpp\
     file.cpp \
     folder.cpp \
     textfile.cpp \
-    filesystemutils.cpp \
-    treeitem.cpp \
-    treemodel.cpp
+    filesystemutils.cpp
 
 HEADERS  += mainwindow.h \
     lista.h \
     file.h \
     folder.h \
     textfile.h \
-    filesystemutils.h \
-    treeitem.h \
-    treemodel.h
+    filesystemutils.h
 
 FORMS    += mainwindow.ui
 
