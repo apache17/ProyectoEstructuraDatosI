@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 QTreeWidgetItem * MainWindow::AddRoot(QTreeWidgetItem * parent,QString nombre)
 {
-    if(parent == NULL){
+    if(parent == NULL  || folderActual == raiz){
         QTreeWidgetItem * itm = new QTreeWidgetItem((ui->treeWidget));
         itm->setText(0,nombre);
         return itm;
@@ -86,7 +86,18 @@ void MainWindow::insertarArchivo(string texto)
 
 void MainWindow::eliminar_archivo()
 {
+    File * temp = fs->fsCargarArchivo(obtenerNodo(),folderActual);
+    if(temp->getTipo() == 0){
+        TextFile* file = dynamic_cast<TextFile*>(temp);
+        file->item->setHidden(true);
+    }
+    else{
+        Folder* file = dynamic_cast<Folder*>(temp);
+        file->item->setHidden(true);
+    }
+
     fs->fsEliminarArchivo(obtenerNodo(),folderActual);
+
     refrescar();
 }
 
@@ -96,9 +107,10 @@ void MainWindow::abrir_archivo()
     Folder* folder = dynamic_cast<Folder*>(temp);
     Folder *temp2 = folderActual;
     folderActual = folder;
-    actual = folderActual->item;
+
     folderActual->anterior = temp2;
     refrescar();
+    actual = folderActual->item;
 }
 
 void MainWindow::editar_archivo()
@@ -250,6 +262,7 @@ void MainWindow::on_btnAtras_clicked()
     {
         folderActual = folderActual->anterior;
         folderActual->siguiente = temp;
+        actual = folderActual->item;
         refrescar();
     }
 }
@@ -259,6 +272,7 @@ void MainWindow::on_btnAdelante_clicked()
     if(folderActual->siguiente != NULL)
     {
         folderActual = folderActual->siguiente;
+        actual = folderActual->item;
         refrescar();
     }
 }
