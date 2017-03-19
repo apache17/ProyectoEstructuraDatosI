@@ -15,9 +15,29 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->btnAtras->setStyleSheet("border-image: url(:/Imagenes/901 (1) - copia.png);");
     ui->btnAdelante->setStyleSheet("border-image: url(:/Imagenes/901 (1).png);");
     ui->btnPegar->hide();
-    arbol = ui->treeView;
+    ui->treeWidget->setColumnCount(1);
+    actual = NULL;
+
+
     refrescar();
 }
+
+QTreeWidgetItem * MainWindow::AddRoot(QTreeWidgetItem * parent,QString nombre)
+{
+    if(parent == NULL){
+        QTreeWidgetItem * itm = new QTreeWidgetItem((ui->treeWidget));
+        itm->setText(0,nombre);
+        return itm;
+    }
+    else{
+        QTreeWidgetItem * itm = new QTreeWidgetItem();
+        itm->setText(0,nombre);
+        parent->addChild(itm);
+        return itm;
+    }
+}
+
+
 
 void MainWindow::agregarLabel(string nombre)
 {
@@ -38,10 +58,8 @@ void MainWindow::insertarCarpeta(string texto)
     listaBotones.at(cantBotones)->setStyleSheet("border-image: url(:/Imagenes/Folders-PNG-File.png);");
     listaBotones.at(cantBotones)->show();
     connect(listaBotones.at(cantBotones), SIGNAL (released()),this, SLOT (eventoCarpetas()));
-    TreeModel * a = new TreeModel(QString::fromStdString(texto));
-    arbol->setModel(a);
-    arbol->show();
     cantBotones++;
+
     posX = posX + 80;
     if(posX >=600)
     {
@@ -59,9 +77,7 @@ void MainWindow::insertarArchivo(string texto)
     listaBotones.at(cantBotones)->setStyleSheet("border-image: url(:/Imagenes/Docs-icon-iloveimg-resized.png);");
     listaBotones.at(cantBotones)->show();
     connect(listaBotones.at(cantBotones), SIGNAL (released()),this, SLOT (eventoArchivos()));
-    TreeModel * a = new TreeModel(QString::fromStdString(texto));
-    arbol->setModel(a);
-    arbol->show();
+    AddRoot(actual,QString::fromStdString(texto+".txt"));
     cantBotones++;
     posX = posX + 80;
     if(posX >=600)
@@ -83,6 +99,7 @@ void MainWindow::abrir_archivo()
     Folder* folder = dynamic_cast<Folder*>(temp);
     Folder *temp2 = folderActual;
     folderActual = folder;
+    actual = folderActual->item;
     folderActual->anterior = temp2;
     refrescar();
 }
@@ -149,7 +166,9 @@ void MainWindow::on_btnNuevo_clicked()
         string nombre = x.toStdString();
         nombre = fs->fsDuplicados(nombre,folderActual);
         if(x != ""){
-            fs->fsCrearArchivo(folderActual,nombre,"Carpeta");
+            File * x = fs->fsCrearArchivo(folderActual,nombre,"Carpeta");
+            Folder* folder = dynamic_cast<Folder*>(x);
+            folder->item = AddRoot(actual,QString::fromStdString(nombre));
             insertarCarpeta(nombre);
         }
     }
@@ -281,3 +300,5 @@ void MainWindow::mouseDoubleClickEvent ( QMouseEvent * e )
 
     }
 }
+
+

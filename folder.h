@@ -3,6 +3,8 @@
 #include "File.h"
 #include "lista.h"
 
+#include <qtreewidget.h>
+
 class Folder : public File
 {
     public:
@@ -13,6 +15,7 @@ class Folder : public File
         void setDireccion(string d);
         int getTipo();
         Lista *lista;
+        QTreeWidgetItem * item;
         int cant;
         virtual ~Folder();
 

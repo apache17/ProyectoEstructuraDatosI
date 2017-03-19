@@ -9,6 +9,9 @@
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include "treemodel.h"
+#include <QTreeWidget>
+#include <QtCore>
+#include <QtGui>
 
 using namespace std;
 
@@ -58,6 +61,10 @@ private:
     FileSystemUtils *fs;
     Folder * folderActual;
     Folder * raiz;
+    QTreeWidgetItem * actual;
+
+    QTreeWidgetItem * AddRoot(QTreeWidgetItem * parent,QString nombre);
+
 
 
 };

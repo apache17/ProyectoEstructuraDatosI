@@ -106,15 +106,20 @@
      <string>Pegar</string>
     </property>
    </widget>
-   <widget class="QTreeView" name="treeView">
+   <widget class="QTreeWidget" name="treeWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>141</width>
+      <width>151</width>
       <height>421</height>
      </rect>
     </property>
+    <column>
+     <property name="text">
+      <string notr="true">1</string>
+     </property>
+    </column>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

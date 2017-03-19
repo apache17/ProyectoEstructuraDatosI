@@ -2,6 +2,7 @@
 
 Folder::Folder(string nombre, string direccion) : File(nombre,direccion,1)
 {
+    this->item = item;
     lista = new Lista();
     cant = 0;
     anterior = NULL;
