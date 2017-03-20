@@ -28,6 +28,15 @@
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="cursor">
+     <cursorShape>BlankCursor</cursorShape>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
     <property name="text">
      <string/>
     </property>
@@ -105,6 +114,10 @@
     <property name="text">
      <string>Pegar</string>
     </property>
+    <property name="icon">
+     <iconset resource="folder.qrc">
+      <normaloff>:/Imagenes/thin-0255_paste_clipboard-512.png</normaloff>:/Imagenes/thin-0255_paste_clipboard-512.png</iconset>
+    </property>
    </widget>
    <widget class="QTreeWidget" name="treeWidget">
     <property name="geometry">
@@ -131,6 +144,14 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuNuevo">
+    <property name="title">
+     <string>Nuevo</string>
+    </property>
+    <addaction name="actionCarpeta"/>
+    <addaction name="actionArchivo"/>
+   </widget>
+   <addaction name="menuNuevo"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -141,6 +162,24 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionCarpeta">
+   <property name="icon">
+    <iconset resource="folder.qrc">
+     <normaloff>:/Imagenes/Folders-PNG-File.png</normaloff>:/Imagenes/Folders-PNG-File.png</iconset>
+   </property>
+   <property name="text">
+    <string>Carpeta</string>
+   </property>
+  </action>
+  <action name="actionArchivo">
+   <property name="icon">
+    <iconset resource="folder.qrc">
+     <normaloff>:/Imagenes/Docs-icon-iloveimg-resized.png</normaloff>:/Imagenes/Docs-icon-iloveimg-resized.png</iconset>
+   </property>
+   <property name="text">
+    <string>Archivo</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

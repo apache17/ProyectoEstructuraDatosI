@@ -24,7 +24,7 @@ string TextFile::getTexto()
 
 void TextFile::setTexto(string valor)
 {
-    texto = texto + valor;
+    texto = valor;
 }
 
 

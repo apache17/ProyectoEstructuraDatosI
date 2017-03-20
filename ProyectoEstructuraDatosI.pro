@@ -18,16 +18,19 @@ SOURCES += main.cpp\
     file.cpp \
     folder.cpp \
     textfile.cpp \
-    filesystemutils.cpp
+    filesystemutils.cpp \
+    editar.cpp
 
 HEADERS  += mainwindow.h \
     lista.h \
     file.h \
     folder.h \
     textfile.h \
-    filesystemutils.h
+    filesystemutils.h \
+    editar.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    editar.ui
 
 RESOURCES += \
     folder.qrc

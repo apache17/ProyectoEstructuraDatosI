@@ -27,6 +27,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
 
 private slots:
+    void nuevoArchivo();
+    void nuevaCarpeta();
     void eliminar_archivo();
     void abrir_archivo();
     void leer_archivo();
@@ -47,6 +49,10 @@ private slots:
     void on_btnAdelante_clicked();
     void on_btnPegar_clicked();
 
+    void on_actionCarpeta_triggered();
+
+    void on_actionArchivo_triggered();
+
 private:
     Ui::MainWindow *ui;
     QTreeView * arbol;
@@ -65,6 +71,7 @@ private:
 
     QTreeWidgetItem * AddRoot(QTreeWidgetItem * parent,QString nombre);
     int AgregarItemCopy(Folder *raiz);
+
 
 
 

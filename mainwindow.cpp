@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include "editar.h"
 #include <QInputDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->btnAtras->setStyleSheet("border-image: url(:/Imagenes/901 (1) - copia.png);");
     ui->btnAdelante->setStyleSheet("border-image: url(:/Imagenes/901 (1).png);");
     ui->btnPegar->hide();
+
     actual = NULL;
     refrescar();
 }
@@ -108,16 +109,21 @@ void MainWindow::abrir_archivo()
     Folder *temp2 = folderActual;
     folderActual = folder;
     folderActual->anterior = temp2;
-    refrescar();
+
     actual = folderActual->item;
+    refrescar();
 }
 
 void MainWindow::editar_archivo()
 {
+
     File * temp = fs->fsCargarArchivo(obtenerNodo(),folderActual);
     TextFile* file = dynamic_cast<TextFile*>(temp);
-    QString x = QInputDialog::getText(this,"Modificar Archivo","Ingrese el Texto:");
-    file->setTexto(x.toStdString());
+    Editar * inp = new Editar("Editar Archivo","Ingrese el Texto",QString::fromStdString(file->getTexto()));
+    inp->exec();
+
+
+    file->setTexto(inp->getValor().toStdString());
 }
 
 void MainWindow::leer_archivo()
@@ -131,14 +137,49 @@ void MainWindow::leer_archivo()
 
 void MainWindow::on_btnPegar_clicked()
 {
-    File *temp = fileCopiar;
-    temp->setNombre(fs->fsDuplicados(temp->getNombre(),folderActual));
-    temp->setDireccion(folderActual->getDireccion()+temp->getNombre()+"/");
-    fs->fsPegar(temp,folderActual);
-    AddRoot(actual,QString::fromStdString(temp->getNombre()));
+    fileCopiar->setNombre(fs->fsDuplicados(fileCopiar->getNombre(),folderActual));
+    fileCopiar->setDireccion(folderActual->getDireccion()+fileCopiar->getNombre()+"/");
+    if(fileCopiar->getTipo() == 1)
+    {
+        Folder* folder = dynamic_cast<Folder*>(fileCopiar);
+        folder->item = AddRoot(actual,QString::fromStdString(folder->getNombre()));
+        fs->fsPegar(folder,folderActual);
+        AgregarItemCopy(folder);
+    }
+    else
+    {
+        TextFile* txt = dynamic_cast<TextFile*>(fileCopiar);
+        txt->item = AddRoot(actual,QString::fromStdString(txt->getNombre()));
+        fs->fsPegar(txt,folderActual);
+    }
     fileCopiar = NULL;
     ui->btnPegar->hide();
     refrescar();
+}
+
+int MainWindow::AgregarItemCopy(Folder *raiz)
+{
+    if(raiz->lista->inicio == NULL)
+        return 0;
+    else
+    {
+        File * temp = raiz->lista->inicio;
+        for(int x = 0;raiz->cant > x;x++)
+        {
+            if(temp->getTipo() == 0){
+                TextFile* file = dynamic_cast<TextFile*>(temp);
+                file->item = AddRoot(raiz->item,QString::fromStdString(file->getNombre()));
+            }
+            else
+            {
+                Folder* folder = dynamic_cast<Folder*>(temp);
+                folder->item = AddRoot(raiz->item,QString::fromStdString(folder->getNombre()));
+                AgregarItemCopy(folder);
+            }
+            temp = temp->siguiente;
+        }
+    }
+    return -1;
 }
 
 void MainWindow::copiar()
@@ -166,31 +207,53 @@ void MainWindow::on_btnNuevo_clicked()
     QMessageBox msgBoxNuevo;
     msgBoxNuevo.setText(tr("Crear Nuevo"));
     QAbstractButton * pButtonCarpeta = msgBoxNuevo.addButton(tr("Carpeta"), QMessageBox::YesRole);
+    QPixmap pixmap(":/Imagenes/Folders-PNG-File.png");
+    QIcon buttonicon(pixmap);
+    pButtonCarpeta->setIcon(buttonicon);
+
     QAbstractButton * pButtonArchivo = msgBoxNuevo.addButton(tr("Archivo"), QMessageBox::YesRole);
-    msgBoxNuevo.addButton(tr("Cancelar"), QMessageBox::NoRole);
+    QPixmap pixmap1(":/Imagenes/Docs-icon-iloveimg-resized.png");
+    QIcon buttonicon1(pixmap1);
+    pButtonArchivo->setIcon(buttonicon1);
+
+    QAbstractButton * pButtonCancelar = msgBoxNuevo.addButton(tr("Cancelar"), QMessageBox::NoRole);
+    QPixmap pixmap2(":/Imagenes/Cancel_Icon-128.png");
+    QIcon buttonicon2(pixmap2);
+    pButtonCancelar->setIcon(buttonicon2);
+
     msgBoxNuevo.exec();
-    if(msgBoxNuevo.clickedButton()==pButtonCarpeta) {
-        QString x = QInputDialog::getText(this,"Nueva Carpeta","Ingrese el Nombre de la Carpeta:");
-        string nombre = x.toStdString();
-        nombre = fs->fsDuplicados(nombre,folderActual);
-        if(x != ""){
-            File * x = fs->fsCrearArchivo(folderActual,nombre,"Carpeta");
-            Folder* folder = dynamic_cast<Folder*>(x);
-            folder->item = AddRoot(actual,QString::fromStdString(nombre));
-            insertarCarpeta(nombre);
-        }
-    }
+    if(msgBoxNuevo.clickedButton()==pButtonCarpeta)
+        nuevaCarpeta();
     else if(msgBoxNuevo.clickedButton()==pButtonArchivo)
+        nuevoArchivo();
+
+}
+
+void MainWindow::nuevaCarpeta()
+{
+    QString x = QInputDialog::getText(this,"Nueva Carpeta","Ingrese el Nombre de la Carpeta:");
+    string nombre = x.toStdString();
+    nombre = fs->fsDuplicados(nombre,folderActual);
+    if(x != "")
     {
-        QString x = QInputDialog::getText(this,"Nuevo Archivo","Ingrese el Nombre del Archivo:");
-        string nombre = x.toStdString();
-        nombre = fs->fsDuplicados(nombre,folderActual);
-        if(x != ""){
-            File * x = fs->fsCrearArchivo(folderActual,nombre,"Archivo");
-            TextFile * file = dynamic_cast<TextFile*>(x);
-            file->item = AddRoot(actual,QString::fromStdString(nombre+".txt"));
-            insertarArchivo(nombre);
-        }
+        File * x = fs->fsCrearArchivo(folderActual,nombre,"Carpeta");
+        Folder* folder = dynamic_cast<Folder*>(x);
+        folder->item = AddRoot(actual,QString::fromStdString(nombre));
+        insertarCarpeta(nombre);
+    }
+}
+
+void MainWindow::nuevoArchivo()
+{
+    QString x = QInputDialog::getText(this,"Nuevo Archivo","Ingrese el Nombre del Archivo:");
+    string nombre = x.toStdString();
+    nombre = fs->fsDuplicados(nombre,folderActual);
+    if(x != "")
+    {
+        File * x = fs->fsCrearArchivo(folderActual,nombre,"Archivo");
+        TextFile * file = dynamic_cast<TextFile*>(x);
+        file->item = AddRoot(actual,QString::fromStdString(nombre+".txt"));
+        insertarArchivo(nombre);
     }
 }
 
@@ -200,10 +263,30 @@ void MainWindow::eventoArchivos()
     msgBoxArchivos.setWindowTitle("File System Utils");
     msgBoxArchivos.setText(tr("Que desea hacer?"));
     QAbstractButton * pButtonAbrir = msgBoxArchivos.addButton(tr("Leer"), QMessageBox::YesRole);
+    QPixmap pixmap(":/Imagenes/oYPS__file_document_enlarge_magnifier_magnify_examine_read_paper_page_text-512.png");
+    QIcon buttonicon(pixmap);
+    pButtonAbrir->setIcon(buttonicon);
+
     QAbstractButton * pButtonEditar = msgBoxArchivos.addButton(tr("Editar"), QMessageBox::YesRole);
+    QPixmap pixmap4(":/Imagenes/pencil_and_paper-512.png");
+    QIcon buttonicon4(pixmap4);
+    pButtonEditar->setIcon(buttonicon4);
+
     QAbstractButton * pButtonEliminar = msgBoxArchivos.addButton(tr("Eliminar"), QMessageBox::YesRole);
+    QPixmap pixmap3(":/Imagenes/remove-icon-png-24.png");
+    QIcon buttonicon3(pixmap3);
+    pButtonEliminar->setIcon(buttonicon3);
+
     QAbstractButton * pButtonCopiar = msgBoxArchivos.addButton(tr("Copiar"), QMessageBox::YesRole);
-    msgBoxArchivos.addButton(tr("Cancelar"), QMessageBox::NoRole);
+    QPixmap pixmap5(":/Imagenes/copying_copy_rip_backup_copy_duplication-512.png");
+    QIcon buttonicon5(pixmap5);
+    pButtonCopiar->setIcon(buttonicon5);
+
+    QAbstractButton * pButtonCancelar = msgBoxArchivos.addButton(tr("Cancelar"), QMessageBox::NoRole);
+    QPixmap pixmap2(":/Imagenes/Cancel_Icon-128.png");
+    QIcon buttonicon2(pixmap2);
+    pButtonCancelar->setIcon(buttonicon2);
+
     msgBoxArchivos.exec();
 
     if(msgBoxArchivos.clickedButton()==pButtonAbrir){
@@ -232,9 +315,25 @@ void MainWindow::eventoCarpetas()
     msgBoxCarpetas.setWindowTitle("File System Utils");
     msgBoxCarpetas.setText(tr("Que desea hacer?"));
     QAbstractButton * pButtonAbrir = msgBoxCarpetas.addButton(tr("Abrir"), QMessageBox::YesRole);
+    QPixmap pixmap(":/Imagenes/oYPS__file_document_enlarge_magnifier_magnify_examine_read_paper_page_text-512.png");
+    QIcon buttonicon(pixmap);
+    pButtonAbrir->setIcon(buttonicon);
+
     QAbstractButton * pButtonEliminar = msgBoxCarpetas.addButton(tr("Eliminar"), QMessageBox::YesRole);
+    QPixmap pixmap3(":/Imagenes/remove-icon-png-24.png");
+    QIcon buttonicon3(pixmap3);
+    pButtonEliminar->setIcon(buttonicon3);
+
     QAbstractButton * pButtonCopiar = msgBoxCarpetas.addButton(tr("Copiar"), QMessageBox::YesRole);
-    msgBoxCarpetas.addButton(tr("Cancelar"), QMessageBox::NoRole);
+    QPixmap pixmap5(":/Imagenes/copying_copy_rip_backup_copy_duplication-512.png");
+    QIcon buttonicon5(pixmap5);
+    pButtonCopiar->setIcon(buttonicon5);
+
+    QAbstractButton * pButtonCancelar = msgBoxCarpetas.addButton(tr("Cancelar"), QMessageBox::NoRole);
+    QPixmap pixmap2(":/Imagenes/Cancel_Icon-128.png");
+    QIcon buttonicon2(pixmap2);
+    pButtonCancelar->setIcon(buttonicon2);
+
     msgBoxCarpetas.exec();
 
     if(msgBoxCarpetas.clickedButton()==pButtonAbrir){
@@ -291,7 +390,7 @@ void MainWindow::refrescar()
     cantBotones = 0;
     cantLabel = 0;
     posX = 170;
-    posY = 70;
+    posY = 80;
 
     QList <File*> listaTemp;
     listaTemp = fs->fsListarArchivos(folderActual);
@@ -313,4 +412,12 @@ void MainWindow::mouseDoubleClickEvent ( QMouseEvent * e )
     }
 }
 
+void MainWindow::on_actionCarpeta_triggered()
+{
+    nuevaCarpeta();
+}
 
+void MainWindow::on_actionArchivo_triggered()
+{
+    nuevoArchivo();
+}
