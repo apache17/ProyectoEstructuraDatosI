@@ -7,7 +7,7 @@
 #include "TextFile.h"
 #include "lista.h"
 #include <qlist.h>
-#include "mainwindow.h"
+
 
 
 class FileSystemUtils
@@ -19,7 +19,7 @@ public:
         QList<File*> fsListarArchivos(Folder *donde);
         File * fsCargarArchivo(string nombre,Folder *donde);
         int fsEliminarArchivo(string nombre,Folder *donde);
-
+        
         File * fsCopiar(string nombre,Folder *donde);
         File * copiarCarpeta(Folder *carpeta, Folder *copiar);
         void fsPegar(File * nuevo, Folder *donde);

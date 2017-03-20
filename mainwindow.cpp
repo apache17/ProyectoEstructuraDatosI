@@ -16,10 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->btnAtras->setStyleSheet("border-image: url(:/Imagenes/901 (1) - copia.png);");
     ui->btnAdelante->setStyleSheet("border-image: url(:/Imagenes/901 (1).png);");
     ui->btnPegar->hide();
-    ui->treeWidget->setColumnCount(1);
     actual = NULL;
-
-
     refrescar();
 }
 
@@ -54,7 +51,6 @@ void MainWindow::insertarCarpeta(string texto)
     menuMode->addAction("Abrir",this, SLOT(abrir_archivo()));
     menuMode->addAction("Eliminar",this, SLOT(eliminar_archivo()));
     menuMode->addAction("Copiar",this, SLOT(copiar()));
-
     agregarLabel(texto);
     listaBotones.append(new QPushButton(this));
     listaBotones.at(cantBotones)->setObjectName(QString::fromStdString(texto));
@@ -64,7 +60,6 @@ void MainWindow::insertarCarpeta(string texto)
    //listaBotones.at(cantBotones)->setMenu(menuMode);
     connect(listaBotones.at(cantBotones), SIGNAL (released()),this, SLOT (eventoCarpetas()));
     cantBotones++;
-
     posX = posX + 80;
     if(posX >=600)
     {
@@ -102,9 +97,7 @@ void MainWindow::eliminar_archivo()
         Folder* file = dynamic_cast<Folder*>(temp);
         file->item->setHidden(true);
     }
-
     fs->fsEliminarArchivo(obtenerNodo(),folderActual);
-
     refrescar();
 }
 
@@ -114,7 +107,6 @@ void MainWindow::abrir_archivo()
     Folder* folder = dynamic_cast<Folder*>(temp);
     Folder *temp2 = folderActual;
     folderActual = folder;
-
     folderActual->anterior = temp2;
     refrescar();
     actual = folderActual->item;
@@ -166,7 +158,6 @@ string MainWindow::obtenerNodo()
                 return temp->objectName().toStdString();
         }
     }
-
     return NULL;
 }
 
@@ -316,7 +307,7 @@ void MainWindow::refrescar()
 
 void MainWindow::mouseDoubleClickEvent ( QMouseEvent * e )
 {
-    if ( e->button() == Qt::LeftButton)
+    if ( e->button() == Qt::RightButton)
     {
 
     }

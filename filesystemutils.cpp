@@ -172,7 +172,6 @@ File * FileSystemUtils::copiarCarpeta(Folder *carpeta,Folder * copiar)
             {
                 File *tempNuevo = fsCrearArchivo(copiar,temp->getNombre(),"Carpeta");
                 Folder * sigCopiar = dynamic_cast<Folder*>(tempNuevo);
-
                 Folder * sigCarpeta = dynamic_cast<Folder*>(temp);
                 copiarCarpeta(sigCarpeta,sigCopiar);
             }
