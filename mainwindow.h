@@ -41,7 +41,7 @@ private slots:
     void agregarLabel(string nombre);
     void insertarCarpeta(string texto);
     void insertarArchivo(string texto);
-   \
+
     void on_btnNuevo_clicked();
     void on_btnAtras_clicked();
     void on_btnAdelante_clicked();
@@ -64,6 +64,7 @@ private:
     QTreeWidgetItem * actual;
 
     QTreeWidgetItem * AddRoot(QTreeWidgetItem * parent,QString nombre);
+    int AgregarItemCopy(Folder *raiz);
 
 
 

@@ -178,4 +178,6 @@ File * FileSystemUtils::copiarCarpeta(Folder *carpeta,Folder * copiar)
             temp = temp->siguiente;
         }
     }
+    return NULL;
 }
+
