@@ -205,6 +205,8 @@ string MainWindow::obtenerNodo()
 void MainWindow::on_btnNuevo_clicked()
 {
     QMessageBox msgBoxNuevo;
+
+    msgBoxNuevo.setWindowTitle("File System Utils");
     msgBoxNuevo.setText(tr("Crear Nuevo"));
     QAbstractButton * pButtonCarpeta = msgBoxNuevo.addButton(tr("Carpeta"), QMessageBox::YesRole);
     QPixmap pixmap(":/Imagenes/Folders-PNG-File.png");
